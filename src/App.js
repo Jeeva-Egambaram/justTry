@@ -1,3 +1,4 @@
+// App.js
 import React from 'react';
 import {
   Box,
@@ -10,6 +11,7 @@ import {
   IconButton,
   Tooltip,
   CssBaseline,
+  useTheme,
 } from '@mui/material';
 import { motion } from 'framer-motion';
 import DownloadIcon from '@mui/icons-material/Download';
@@ -23,7 +25,6 @@ import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
-
 
 const skills = [
   { name: 'Java', icon: <CodeIcon /> },
@@ -103,6 +104,8 @@ export default function App() {
     [mode]
   );
 
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -110,7 +113,9 @@ export default function App() {
         {/* Navigation */}
         <Box
           display="flex"
-          justifyContent="space-around"
+          flexDirection={isMobile ? 'column' : 'row'}
+          alignItems="center"
+          justifyContent="space-between"
           p={2}
           bgcolor="background.paper"
           position="sticky"
@@ -118,13 +123,18 @@ export default function App() {
           zIndex={1}
           boxShadow={3}
         >
-          {['Home', 'About', 'Skills', 'Projects', 'Contact'].map((text) => (
-            <motion.div whileHover={{ scale: 1.1 }} key={text}>
-              <Button onClick={() => scrollTo(text.toLowerCase())} sx={{ fontWeight: 600 }}>
-                {text}
-              </Button>
-            </motion.div>
-          ))}
+          <Box display="flex" flexWrap="wrap" justifyContent="center" gap={2}>
+            {['Home', 'About', 'Skills', 'Projects', 'Contact'].map((text) => (
+              <motion.div whileHover={{ scale: 1.1 }} key={text}>
+                <Button
+                  onClick={() => scrollTo(text.toLowerCase())}
+                  sx={{ fontWeight: 600 }}
+                >
+                  {text}
+                </Button>
+              </motion.div>
+            ))}
+          </Box>
           <IconButton onClick={() => setMode(mode === 'light' ? 'dark' : 'light')}>
             {mode === 'light' ? <Brightness4Icon /> : <Brightness7Icon />}
           </IconButton>
@@ -138,6 +148,7 @@ export default function App() {
           alignItems="center"
           justifyContent="center"
           textAlign="center"
+          px={2}
           sx={{
             background:
               mode === 'light'
@@ -147,13 +158,18 @@ export default function App() {
           }}
         >
           <motion.div initial={{ opacity: 0, y: -50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1 }}>
-            <Typography variant="h2" gutterBottom fontWeight={700} sx={{ textShadow: '2px 2px 8px rgba(0,0,0,0.3)' }}>
+            <Typography
+              variant={isMobile ? 'h4' : 'h2'}
+              gutterBottom
+              fontWeight={700}
+              sx={{ textShadow: '2px 2px 8px rgba(0,0,0,0.3)' }}
+            >
               Hi, I'm Jeeva
             </Typography>
-            <Typography variant="h5" mb={2} sx={{ opacity: 0.9 }}>
+            <Typography variant="h6" mb={2} sx={{ opacity: 0.9 }}>
               Crafting Scalable Fullstack Solutions
             </Typography>
-            <Typography variant="subtitle1" mb={3}>
+            <Typography variant="subtitle2" mb={3}>
               Java | Spring Boot | PostgreSQL | React | GWT | REST APIs
             </Typography>
             <motion.div whileHover={{ scale: 1.1 }}>
@@ -185,15 +201,16 @@ export default function App() {
             <Typography variant="h4" gutterBottom fontWeight={600}>
               Technical Skills
             </Typography>
-            <Grid container spacing={2}>
+            <Grid container spacing={2} justifyContent={isMobile ? 'center' : 'flex-start'}>
               {skills.map((skill) => (
-                <Grid item key={skill.name}>
+                <Grid item xs={6} sm={4} md={3} key={skill.name}>
                   <Tooltip title={skill.name} placement="top">
                     <Chip
                       icon={skill.icon}
                       label={skill.name}
                       variant="outlined"
                       sx={{
+                        width: '100%',
                         bgcolor: mode === 'light' ? 'white' : '#333',
                         borderColor: '#cfd8dc',
                         '&:hover': { bgcolor: '#e0f7fa' },
